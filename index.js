@@ -257,6 +257,8 @@ async function updateEcsService(ecs, clusterName, service, taskDefArn, waitForSe
       services: [service],
       cluster: clusterName
     });
+
+    await verifyServiceDeployment(ecs, clusterName, service, taskDefArn);
   } else {
     core.debug('Not waiting for the service to become stable');
   }
@@ -572,7 +574,6 @@ async function createCodeDeployDeployment(codedeploy, clusterName, service, task
     await waitUntilDeploymentSuccessful(waiterConfig, {
       deploymentId: createDeployResponse.deploymentId
     });
-    await verifyServiceDeployment(ecs, clusterName, service, taskDefArn);
   } else {
     core.debug('Not waiting for the deployment to complete');
   }

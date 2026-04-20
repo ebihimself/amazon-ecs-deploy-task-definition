@@ -93,13 +93,21 @@ describe('Deploy to ECS', () => {
 
         mockEcsUpdateService.mockImplementation(() => Promise.resolve({}));
 
-        mockEcsDescribeServices.mockImplementation(
-            () => Promise.resolve({
-                failures: [],
-                services: [{
-                    status: 'ACTIVE'
-                }]
-            })
+        mockEcsDescribeServices.mockImplementation(() =>
+          Promise.resolve({
+            failures: [],
+            services: [{
+              status: 'ACTIVE',
+              deploymentController: { type: 'ECS' },
+              deployments: [
+                {
+                  status: 'PRIMARY',
+                  taskDefinition: 'task:def:arn',
+                  rolloutState: 'COMPLETED'
+                }
+              ]
+            }]
+          })
         );
 
         mockCodeDeployCreateDeployment.mockImplementation(
@@ -1238,8 +1246,7 @@ describe('Deploy to ECS', () => {
               },
               {
                 status: 'ACTIVE',
-                taskDefinition: 'task:def:arn',
-                rolloutState: 'FAILED'
+                taskDefinition: 'task:def:arn'
               }
             ]
           }]
